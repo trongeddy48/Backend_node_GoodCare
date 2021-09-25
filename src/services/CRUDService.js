@@ -81,6 +81,7 @@ let updateUserData = (data) => {
                 user.firstName = data.firstName;
                 user.lastName = data.lastName;
                 user.address = data.address;
+                user.phonenumber = data.phonenumber;
                 console.log(user);
                 await user.save();
                 
