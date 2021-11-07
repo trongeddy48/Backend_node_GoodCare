@@ -161,16 +161,10 @@ let bulkCreateSchedule = (data) => {
                         raw: true
                     }
                 );
-                //chuyen doi ngay
-                if(existing && existing.length > 0){
-                    existing = existing.map(item => {
-                        item.date = new Date(item.date).getTime();
-                        return item;
-                    })
-                }
+                
                 //kiem tra su khac biet
                 let toCreate = _.differenceWith(schedule, existing, (a, b) => {
-                    return a.timeType === b.timeType && a.date === b.date;
+                    return a.timeType === b.timeType && +a.date === +b.date;
                 });
                 //tao data
                 if(toCreate && toCreate.length > 0){
@@ -201,7 +195,12 @@ let getScheduleByDate = (doctorId, date) => {
                     where: {
                         doctorId: doctorId,
                         date: date
-                    }
+                    },
+                    include: [
+                        { model: db.Allcode, as: 'timeTypeData', attributes: ['valueEn', 'valueVi'] },
+                    ],
+                    raw: false,
+                    nest: true
                 })
 
                 if(!dataSchedule) dataSchedule = [];
