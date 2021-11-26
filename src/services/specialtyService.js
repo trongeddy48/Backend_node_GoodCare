@@ -97,7 +97,6 @@ let getDetailSpecialtyById = (inputId, location) => {
                         errMessage: 'Ok',
                         data
                     })
-                
             }
         } catch (e) {
             reject(e);
