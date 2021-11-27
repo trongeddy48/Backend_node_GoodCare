@@ -48,6 +48,7 @@ let initWebRoutes = (app) => {
     
     router.post('/api/create-new-handbook', handbookController.createHandbook);
     router.get('/api/get-handbook', handbookController.getAllHandbook);
+    router.get('/api/get-detail-handbook-by-id', handbookController.getDetailHandbookById);
 
     return app.use("/", router);
 }

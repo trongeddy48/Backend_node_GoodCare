@@ -51,7 +51,40 @@ let getAllHandbook = () => {
     })
 }
 
+let getDetailHandbookById = (inputId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if(!inputId) {
+                resolve({
+                    errCode: 1,
+                    errMessage: 'Missing params!'
+                })
+            }else {
+                let data = await db.Handbook.findOne({
+                    where: {
+                        id: inputId
+                    },
+                    attributes: ['name', 'descriptionHTML', 'descriptionMarkdown']
+                })
+                if(data) {
+                    // data.image = Buffer.from(data.image, 'base64').toString('binary');
+                
+                }else data = {}
+
+                resolve({
+                    errCode: 0,
+                    errMessage: 'Ok',
+                    data
+                })
+            }
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 module.exports = {
     createHandbook: createHandbook,
-    getAllHandbook: getAllHandbook
+    getAllHandbook: getAllHandbook,
+    getDetailHandbookById: getDetailHandbookById
 }
