@@ -29,7 +29,7 @@ let getBodyHTMLEmail = (dataSend) => {
         result = 
         `
         <h3>Xin chào ${dataSend.patientName} !</h3>
-        <p>Bạn nhận được Email này vì đã đặt lịch khám bệnh trên website Goodcare !</p>
+        <p>Bạn nhận được Email này vì đã đặt lịch khám bệnh trên website GoodCare !</p>
         <p>Thông tin đặt lịch khám bệnh:</p>
         <div><b>Thời gian: ${dataSend.time}</b></div>
         <div><b>Bác sĩ: ${dataSend.doctorName}</b></div>
@@ -138,7 +138,47 @@ let sendAttachment = async (dataSend) => {
     })
 }
 
+
+let sendCancelBooking = async (dataSend) => {
+    // create reusable transporter object using the default SMTP transport
+    let transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com",
+        port: 587,
+        secure: false, // true for 465, false for other ports
+        auth: {
+        user: process.env.EMAIL_APP, // generated ethereal user
+        pass: process.env.EMAIL_APP_PASSWORD, // generated ethereal password
+        },
+    });
+
+    // send mail with defined transport object
+    let info = await transporter.sendMail({
+        from: '"CSKH Goodcare" <goodcare.dev48@gmail.com>', // sender address
+        to: dataSend.email, // list of receivers
+        subject: "Thông tin hủy lịch khám bệnh tại GoodCare", // Subject line
+        
+        html: getBodyCancelBooking(dataSend), // html body
+    });
+}
+
+let getBodyCancelBooking = (dataSend) => {
+    let result = '';
+        result = 
+        `
+        <h3>Xin chào ${dataSend.patientName} !</h3>
+        <p> Bạn nhận được Email này vì lịch khám bệnh của bạn trên website GoodCare đã bị HỦY !</p>
+        <p> GoodCare rất hoan nghênh nếu được tiếp tục phục vụ bạn ở những lần tiếp theo !</p>
+        <h3> Chúc bạn thật nhiều sức khỏe và thành công trong cuộc sống. </h3>
+        <h3> GoodCare Xin chân thành cảm ơn ! </h3>
+        <div>*****************</div>
+        <div>GoodCare</div>
+        <div>*****************</div>
+        `
+    return result;
+}
+
 module.exports = {
     sendSimpleEmail: sendSimpleEmail,
-    sendAttachment: sendAttachment
+    sendAttachment: sendAttachment,
+    sendCancelBooking: sendCancelBooking,
 }

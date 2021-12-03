@@ -5,11 +5,11 @@ import emailService from '../services/emailService';
 
 const MAX_NUMBER_SCHEDULE = process.env.MAX_NUMBER_SCHEDULE;
 
-let getTopDoctorHome = (limitInput) => {
+let getTopDoctorHome = () => {
     return new Promise(async(resolve, reject) => {
         try {
             let users = await db.User.findAll({
-                limit: limitInput,
+                // limit: limitInput,
                 where: { roleId: 'R2' },
                 order: [['createdAt', 'DESC']],
                 attributes: {
@@ -463,6 +463,46 @@ let sendRemedy = (data) => {
     })
 }
 
+let sendCancelBooking = (data) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            if(!data.email 
+                || !data.doctorId 
+                || !data.patientId 
+                || !data.timeType){
+                resolve({
+                    errCode: 1,
+                    errMessage: 'Missing required param'
+                })
+            }else{
+                //update patient status
+                let updatePatient = await db.Booking.findOne({
+                    where: {
+                        doctorId: data.doctorId,
+                        patientId: data.patientId,
+                        timeType: data.timeType,
+                        statusId: 'S2'
+                    },
+                    raw: false
+                })
+                if(updatePatient){
+                    updatePatient.statusId = 'S4';
+                    await updatePatient.save();
+                }
+                //send email remedy
+                await emailService.sendCancelBooking(data);
+
+                resolve({
+                    errCode: 0,
+                    errMessage: 'Ok'
+                })
+            }
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 module.exports = {
     getTopDoctorHome: getTopDoctorHome,
     getAllDoctors: getAllDoctors,
@@ -473,5 +513,6 @@ module.exports = {
     getExtraInfoDoctorById: getExtraInfoDoctorById,
     getProfileDoctorById: getProfileDoctorById,
     getListPatientForDoctor: getListPatientForDoctor,
-    sendRemedy: sendRemedy
+    sendRemedy: sendRemedy,
+    sendCancelBooking: sendCancelBooking,
 }
