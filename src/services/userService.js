@@ -37,16 +37,16 @@ let handleUserLogin = (email, password) => {
                         userData.user = user;
                     }else {
                         userData.errCode = 3;
-                        userData.errMessage = 'Wrong password';
+                        userData.errMessage = 'Sai mật khẩu !';
                     }
                 }else {
                     userData.errCode = 2;
-                    userData.errMessage = 'User is not found'
+                    userData.errMessage = 'Không tìm thấy người dùng !'
                 }
                 
             }else {
                 userData.errCode = 1;
-                userData.errMessage = 'Your is Email is not exist in system. Please try other Email!'
+                userData.errMessage = 'Email của bạn không tồn tại trong hệ thống !'
             }
 
             resolve(userData)
